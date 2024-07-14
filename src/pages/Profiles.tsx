@@ -6,7 +6,6 @@ import ProfileLink from '../components/ProfileLink'
 import EIAddButton from '../components/EIAddButton'
 
 import ProfileForm from '../components/ProfileForm'
-import { taskIcons } from '../utils/icons'
 
 interface Profile {
   id: number;
