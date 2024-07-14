@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react'
 
 const EIAddButton = ( { title, click } : { title: string, click: ()=> void }) => {
     const [ active, setActive ] = useState<boolean>(false)
@@ -15,7 +15,7 @@ const EIAddButton = ( { title, click } : { title: string, click: ()=> void }) =>
 
   return (
     <button 
-        type="button" 
+        type='button' 
         className={`w-[50px] h-[50px] mt-[30px] rounded-full  bg-secondary text-4xl text-white hover:opacity-80 ${active ? 'bg-accent' : null}`}
         title={title}
         onClick={click}

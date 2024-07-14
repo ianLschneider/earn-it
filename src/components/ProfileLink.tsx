@@ -1,4 +1,4 @@
-import EILink from "./EILink";
+import EILink from './EILink';
 
 interface Props {
     id: number

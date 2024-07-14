@@ -1,11 +1,10 @@
-import EILink from "./EILink";
+import EILink from './EILink';
 
 interface Props {
     id: number;
     reward: string;
     spacing: string;
     iconType?: string;
-    
 }
 
 const RewardLink = ( props: Props ) => {

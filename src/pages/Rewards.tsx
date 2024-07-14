@@ -1,6 +1,9 @@
+import { useState } from 'react'
+
 import Nav from '../components/Nav'
 import RewardLink from '../components/RewardLink'
 import EIAddButton from '../components/EIAddButton'
+import RewardForm from '../components/RewardForm'
 
 interface Reward {
   earner: any
@@ -12,14 +15,21 @@ interface Reward {
 
 interface Props {
   rewards: Reward[];
-  // addProfile: (prorefile: Reward) => void;
+  rewardIcons: string[];
+  handleFormSubmit: (data: any, type: string)=>void;
 }
 
-const Rewards = ({rewards}: Props) => {
-  console.log("rewardssss:",rewards)
+const Rewards = (props: Props) => {
+
+  const [showForm, setShowForm] = useState<boolean>(false)
+
   const showAddRewardForm = () => {
-    console.log("click")
+    setShowForm(true)
   }
+  const hideAddRewardForm = () => {
+    setShowForm(false)
+  }
+
 
   return (
     <>
@@ -27,10 +37,24 @@ const Rewards = ({rewards}: Props) => {
       <main className='w-full min-w-[300px] text-center h-full min-h-screen bg-primary'>
         <div className='flex flex-col justify-center items-center min-h-screen'>
         <div className='flex flex-col justify-end items-center rounded-[25px] max-w-[600px] min-h-[200px] bg-white px-[20px] py-[50px] mt-[20px] mb-[80px]'>
-            <ul>
-              { rewards.map(r => <RewardLink id={r.id} reward={r.reward} iconType={r.iconType} spacing={"between"} key={r.id} /> ) }
-            </ul>
-            <EIAddButton title={'Add Profile'} click={showAddRewardForm} />
+
+          {!showForm ?
+              <>
+              <ul>
+                { props.rewards.map(r => <RewardLink id={r.id} reward={r.reward} iconType={r.iconType} spacing={'between'} key={r.id} /> ) }
+              </ul>
+              <EIAddButton title={'Add Profile'} click={showAddRewardForm} />
+              </>
+            :   
+
+              <RewardForm 
+                  icons={props.rewardIcons}
+                  buttonLabel='Add Reward'
+                  hideForm={hideAddRewardForm}
+                  handleSubmit={props.handleFormSubmit}
+              />
+
+            }
           </div>
         </div>
       </main>

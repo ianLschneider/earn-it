@@ -103,8 +103,6 @@ const Nav = () => {
     // event listener for scroll
     window.addEventListener('scroll', changeBackground)
 
-    const navHeight: number = !isDesktop ? 90 : 130
-
     return (
         <nav 
             className={`bg-white h-[102px] w-[100%] relative top-0 left-0 z-10 flex items-center justify-between p-4 font-medium transition ease-in-out duration-200 ${

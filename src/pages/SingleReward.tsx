@@ -1,41 +1,39 @@
-import { useMemo, useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import { useMemo, useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import Nav from "../components/Nav"
-import EIAddButton from "../components/EIAddButton"
-
+import Nav from '../components/Nav'
 
 interface Reward {
     id: number;
-    earner: [number];
+    earners: number[];
     reward: string;
     points: number;
     iconType: any;
 }
 
-// interface Props {
-//     profiles: Reward[],
-//     tasks: TaskProp[],
-//     updateTasks: (id: number, completed: boolean) => void,
-//     updatePoints: (id: number, points: number) => void,
-//     getTasks: (id: number) => void,
-// }
+interface Props {
+    rewards: Reward[];
+    deleteReward: (id: number) => void;
+}
 
-const SingleReward = ({rewards}: {rewards: Reward[]} ) => {
+const SingleReward = (props: Props ) => {
 
     const params = useParams() as any
 
-    const blank =  useMemo<any>( ()=>( {id:0, name: '', age: 0} ), [] )
+    const blank =  useMemo<any>( ()=>( {id:0, reward: '', points: 0} ), [] )
 
     const [currentReward, setCurrentReward] = useState<Reward>( blank )
     
-    // const [tasks, setTasks] = useState<TaskProp[]>( [] )
+    const deleteReward = () => {
+        props.deleteReward(currentReward.id)
+    }
     
     useEffect(()=>{
 
-        const r: Reward | undefined = rewards.find( r => r.id === parseInt( params.id ) )
+        const r: Reward | undefined = props.rewards.find( r => r.id === parseInt( params.id ) )
 
         if(!r){
             return
@@ -43,25 +41,8 @@ const SingleReward = ({rewards}: {rewards: Reward[]} ) => {
 
         setCurrentReward( r )
 
-    }, [params.id, rewards] )
-
-    useEffect(()=>{
-        // getTasks( params.id )
-    }, [])
+    }, [params.id, props.rewards] )
    
-    // const currentPost = useMemo( () => posts.find( post => post.id === parseInt( params.id ) ), [params.id, posts])
-
-    // const handleTaskCompleted = ( id: number, completed: boolean, points: number ) => {
-    //     //console.log(id, completed)
-    //     updateTasks(id, completed)
-    //     updatePoints(id, points)
-    // }
-
-    const showAddTask = ( ) => {
-        console.log("open task modal")
-        
-        
-    }
     return (
         <>
         <Nav />
@@ -69,28 +50,27 @@ const SingleReward = ({rewards}: {rewards: Reward[]} ) => {
             <div className='flex flex-col justify-center items-center h-full content-fill px-[10px]'>
                 
                 <div className='flex flex-col justify-end items-center rounded-[25px] w-full max-w-[400px] min-h-[200px] bg-white px-[20px] py-[50px] mt-[20px] mb-[30px]'>
-                <div></div>
+                    <Link to={`/rewards`} className='self-start text-secondary'>
+                        <FontAwesomeIcon icon='arrow-left' className='text-secondary' /> Back
+                    </Link>
+
                     <h1 className='flex flex-col gap-2 justify-center items-center min-w-[200px] mb-[30px] aspect-square rounded-full border-8 border-primary bg-white text-primary font-semibold text-3xl break-all'>
-                        {
-                            currentReward.iconType ?
-                            <FontAwesomeIcon icon={currentReward.iconType} className='text-6xl' />
-                            : ''
+                    {currentReward.iconType ?
+                        <FontAwesomeIcon icon={currentReward.iconType} className='text-6xl' />
+                        : ''
                         }{currentReward.reward}
                     </h1>
-                    <p className="mb-[20px]">Points: {currentReward.points}</p>
+                    <p className='mb-[40px]'>Points: {currentReward.points}</p>                   
 
-                    {/* { rewards.map( r => <Reward  key={r.id} id={r.id} reward={r.rask} iconType={r.iconType} points={t.points} handleTaskCompleted={handleTaskCompleted} />) } */}
-                    <br className='my-[20px]' />
-                    {/* <EIAddButton title={'Add Task'} click={showAddTask} /> */}
+                    <button
+                    type='button'
+                    className='ei-link mt-[20px] bg-secondary text-white hover:opacity-80 flex justify-center px-[40px]'
+                    onClick={deleteReward}
+                    >Delete</button>
+                    
                 </div>
 
                 
-                {/* <Link to={`/edit/${params.id}`}>
-                    <button type="button">Edit Post</button>
-                </Link>
-                <Link to={`/profiles`}>
-                    <button type="button">Go Back</button>
-                </Link> */} 
             </div>
         </main>
         </>
