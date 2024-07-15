@@ -16,6 +16,7 @@ interface Reward {
 
 interface Props {
     rewards: Reward[];
+    claimReward:(rewardId: number, profileId: number, points: number) => void;
     deleteReward: (id: number) => void;
 }
 
@@ -26,11 +27,18 @@ const SingleReward = (props: Props ) => {
     const blank =  useMemo<any>( ()=>( {id:0, reward: '', points: 0} ), [] )
 
     const [currentReward, setCurrentReward] = useState<Reward>( blank )
-    
+
+    const [currentProfile, setCurrentProfile] = useState<number>( 0 )
+   
+    const [currentPoints, setCurrentPoints] = useState<number>( 0 )
+
     const deleteReward = () => {
         props.deleteReward(currentReward.id)
     }
     
+    const claimReward = ()=>{
+        props.claimReward(currentReward.id, params.profile, currentReward.points )
+    }
     useEffect(()=>{
 
         const r: Reward | undefined = props.rewards.find( r => r.id === parseInt( params.id ) )
@@ -41,14 +49,16 @@ const SingleReward = (props: Props ) => {
 
         setCurrentReward( r )
 
-    }, [params.id, props.rewards] )
+        setCurrentProfile(params.profile)
+        setCurrentPoints(params.points)
+
+    }, [params.id, props.rewards, params.profile, params.points] )
    
     return (
         <>
         <Nav />
         <main className='w-full min-w-[300px] text-center h-full content-area bg-primary'>
             <div className='flex flex-col justify-center items-center h-full content-fill px-[10px]'>
-                
                 <div className='flex flex-col justify-end items-center rounded-[25px] w-full max-w-[400px] min-h-[200px] bg-white px-[20px] py-[50px] mt-[20px] mb-[30px]'>
                     <Link to={`/rewards`} className='self-start text-secondary'>
                         <FontAwesomeIcon icon='arrow-left' className='text-secondary' /> Back
@@ -61,7 +71,13 @@ const SingleReward = (props: Props ) => {
                         }{currentReward.reward}
                     </h1>
                     <p className='mb-[40px]'>Points: {currentReward.points}</p>                   
-
+                    {currentProfile > 0 && currentPoints >= currentReward.points && 
+                        <button
+                        type='button'
+                        className='ei-link mt-[20px] bg-secondary text-white hover:opacity-80 flex justify-center px-[40px]'
+                        onClick={claimReward}
+                        >Claim Reward</button>
+                    }
                     <button
                     type='button'
                     className='ei-link mt-[20px] bg-secondary text-white hover:opacity-80 flex justify-center px-[40px]'

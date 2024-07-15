@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 
 import Nav from '../components/Nav'
 import RewardLink from '../components/RewardLink'
@@ -30,6 +31,8 @@ const Rewards = (props: Props) => {
     setShowForm(false)
   }
 
+  const params = useParams() as any
+
 
   return (
     <>
@@ -41,7 +44,7 @@ const Rewards = (props: Props) => {
           {!showForm ?
               <>
               <ul>
-                { props.rewards.map(r => <RewardLink id={r.id} reward={r.reward} iconType={r.iconType} spacing={'between'} key={r.id} /> ) }
+                { props.rewards.map(r => <RewardLink profile={params.profile} points={params.points} id={r.id} reward={r.reward} iconType={r.iconType} spacing={'between'} key={r.id} /> ) }
               </ul>
               <EIAddButton title={'Add Profile'} click={showAddRewardForm} />
               </>

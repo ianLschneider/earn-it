@@ -13,7 +13,6 @@ interface Props{
 }
 
 const ProfileForm = (props: Props) => {
-    console.log('props', props)
     const [formData, setFormData] = useState(
         props.formType.toLowerCase() === 'new' ? {
             name: '',
@@ -28,7 +27,6 @@ const ProfileForm = (props: Props) => {
     )
 
     const handleChange = (event: any) => {
-        console.log('event.target.name:',event.target.name)
         setFormData( prev =>(
             {
                 ...prev,

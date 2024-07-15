@@ -1,5 +1,5 @@
 import { useMemo, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -9,6 +9,8 @@ import EIAddButton from '../components/EIAddButton'
 
 import ProfileForm from '../components/ProfileForm'
 import TaskForm from '../components/TaskForm'
+
+import EILink from '../components/EILink'
 
 
 interface Profile {
@@ -36,17 +38,19 @@ interface Props {
     profiles: Profile[];
     tasks: TaskProp[];
     taskIcons: string[];
+    rewardPoints: number,
     updateTasks: (id: number, completed: boolean) => void;
-    updatePoints: (id: number, points: number) => void;
+    updatePoints: (id: number, points: number, add: boolean) => void;
     getTasks: (id: number) => void;
     handleFormSubmit: (data: any, type: string)=>void;
     deleteProfile: (id: number)=>void;
     deleteTask: (id: number, profileId: number)=>void;
 }
 
-const SingleProfile = ({profiles, taskIcons, tasks, updateTasks, getTasks, updatePoints, handleFormSubmit, deleteProfile,deleteTask}: Props ) => {
-    console.log("taskIcons:",taskIcons)
+const SingleProfile = ({profiles, rewardPoints, taskIcons, tasks, updateTasks, getTasks, updatePoints, handleFormSubmit, deleteProfile,deleteTask}: Props ) => {
     const params = useParams() as any
+
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const blank =  useMemo<any>( ()=>( {id:0} ), [] )
 
@@ -59,6 +63,12 @@ const SingleProfile = ({profiles, taskIcons, tasks, updateTasks, getTasks, updat
     const [shouldShowEditTaskForm, setShouldShowEditTaskForm] = useState<boolean>(false)
 
     const [shouldShowAddTaskForm, setShouldShowAddTaskForm] = useState<boolean>(false)
+    
+    const [shouldShowClaimRewardsBtn, setShouldShowClaimRewardsBtn] = useState<boolean>(currentProfile.points > 0)
+
+    const [rewardCaimed, setRewardCaimed] = useState<string>( '' )
+
+
     
     // const checkTask = () => typeof tasks[currentTask] !== 'undefined'
 
@@ -88,11 +98,17 @@ const SingleProfile = ({profiles, taskIcons, tasks, updateTasks, getTasks, updat
         setShouldShowEditTaskForm( false )
     }
 
-
-    
+    const showRewardClaimed = (r: string) => {
+        setRewardCaimed(r)
+        // setTimeout( ()=>{
+        //     setRewardCaimed('')
+        // }, 2000 )
+    }   
     useEffect(()=>{
 
         const p: Profile | undefined = profiles.find( profile => profile.id === parseInt( params.id ) )
+
+        // const rp: number | undefined = profiles.find( profile => profile.id === parseInt( params.id ) )
 
         if(!p){
             return
@@ -100,16 +116,25 @@ const SingleProfile = ({profiles, taskIcons, tasks, updateTasks, getTasks, updat
 
         setCurrentProfile( p )
 
-    }, [params.id, profiles] )
+        const reward = searchParams.get('reward')
+        if(reward){
+            showRewardClaimed(reward)
+            searchParams.delete('reward')
+            setSearchParams(searchParams)
+        }  
+
+        setShouldShowClaimRewardsBtn(rewardPoints > 0 && p.points >= rewardPoints )
+
+    }, [params.id, profiles, rewardPoints, setShouldShowClaimRewardsBtn, searchParams, setSearchParams] )
 
     useEffect(()=>{
         getTasks( params.id )
-    }, [])
+    }, [ getTasks, params.id])
  
     const handleTaskCompleted = ( id: number, completed: boolean, points: number ) => {
-        //console.log(id, completed)
         updateTasks(id, completed)
-        updatePoints(id, points)
+        updatePoints(currentProfile.id, points, completed)
+        setShouldShowClaimRewardsBtn(rewardPoints > 0 && currentProfile.points >= rewardPoints)
     }
 
     const handleDeleteProfile = () => {
@@ -122,10 +147,13 @@ const SingleProfile = ({profiles, taskIcons, tasks, updateTasks, getTasks, updat
     return (
         <>
         <Nav />
+       
         <main className='w-full min-w-[300px] text-center h-full content-area bg-primary'>
             <div className='flex flex-col justify-center items-center h-full content-fill px-[10px]'>
-                
-                 <div className='relative flex flex-col justify-end items-center rounded-[25px] w-full max-w-[400px] min-h-[200px] bg-white px-[20px] py-[50px] mt-[20px] mb-[30px]'>
+                {shouldShowClaimRewardsBtn &&
+                    <div className='bg-primary'><EILink url={`/${currentProfile.id}/rewards/${currentProfile.points}`} text='Claim Rewards' /></div>
+                }
+                <div className='relative flex flex-col justify-end items-center rounded-[25px] w-full max-w-[400px] min-h-[200px] bg-white px-[20px] py-[50px] mt-[20px] mb-[30px]'>
 
                     {!shouldShowEditProfileForm ?
 
@@ -161,7 +189,9 @@ const SingleProfile = ({profiles, taskIcons, tasks, updateTasks, getTasks, updat
                                 </li>
                             ))}
                             </ul>
-
+                            {rewardCaimed !== '' &&
+                                <p className='pt-[50px] font-bold'>A <span className='uppercase'>{rewardCaimed.replaceAll('-', ' ')}</span> has been claimed!</p>
+                            }
                             <br className='my-[20px]' />
                             <EIAddButton title={'Add Task'} click={showAddTaskForm} />
                             </>

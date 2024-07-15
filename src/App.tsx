@@ -1,7 +1,6 @@
 
-/* eslint-disable */ 
 //import hooks
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 //import components React Router
 import { useNavigate, Route, Routes } from 'react-router-dom'
@@ -33,6 +32,7 @@ function App() {
   const [currentTasks, setCurrentTasks] = useState<any>([])
   const [earners, setEarners] = useState<any>([])
   const [rewards, setRewards] = useState<any>([])
+  const [rewardPoints, setRewardPoints] = useState<number>(-1)
   
   const [apiErrors, setApiErrors] = useState<any>('')
 
@@ -40,7 +40,12 @@ function App() {
 
   const navigate = useNavigate()
 
-  const getEarners = async () => {
+  const showErrors = useCallback( (error: unknown): void =>{
+    setApiErrors(error)
+    console.log(apiErrors)
+  }, [setApiErrors, apiErrors])
+
+  const getEarners = useCallback( async () => {
     try{
       const response = await fetch (`${API_URL}/earners/`)
       const data = await response.json()
@@ -48,9 +53,9 @@ function App() {
     }catch( error ){
       showErrors(error)
     }
-  }
+  }, [setEarners, showErrors])
 
-  const getTasks = async (id: number) => {
+  const getTasks = useCallback( async (id: number) => {
     try{
       const response = await fetch (`${API_URL}/${id}/tasks/`)
       const data = await response.json()
@@ -58,42 +63,66 @@ function App() {
     }catch( error ){
       showErrors(error)
     }
-  }
+  }, [setCurrentTasks, showErrors])
 
-  const getRewards = async () => {
+  const getRewards = useCallback( async () => {
     try{
       const response = await fetch (`${API_URL}/rewards/`)
       const data = await response.json()
-      setRewards(data) 
+      setRewards(data)
+      
+      let points = data.map((r: any) => r.points )
+      if(points.length < 1){
+        setRewardPoints(-1)
+      }else{
+        points = Math.min(...points);
+        setRewardPoints(points)
+      }
+      
     }catch( error ){
       showErrors(error)
     }
-  }
+  }, [setRewards, showErrors])
 
-  const showErrors = (error: unknown): void =>{
-    setApiErrors(error)
-    console.log(apiErrors)
-  }
- 
   useEffect(()=>{
     getEarners()
     getRewards()
-  }, [])
+  }, [getEarners,getRewards])
 
   const updateProfile  = async (profile: Profile) => {
     try{
-      await fetch (`${API_URL}/profiles/${profile.id}/`, {
+      await fetch (`${API_URL}/earners/${profile.id}/`, {
         method: 'put',
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(profile)
       })
+      getEarners()
     }catch( error ){
       showErrors(error)
     }
   }
 
+  const updateReward = async (rewardId: number, profileId: number) => {
+
+    const reward = rewards.find( (r: any) => r.id === rewardId)
+    if(reward)reward.earner.push(Number( profileId ))
+
+    try{
+      await fetch (`${API_URL}/rewards/${rewardId}/`, {
+        method: 'put',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(reward)
+      })
+    }catch( error ){
+      showErrors(error)
+    }
+
+    navigate(`/profiles/${profileId}?reward=${reward.reward.replaceAll(' ', '-')}`)
+  }
   const updateTasks = async (id: number, completed: boolean) => {
    
     const currentTask: any = currentTasks.find( (task: any) => task.id === id)
@@ -108,6 +137,7 @@ function App() {
         },
         body: JSON.stringify(currentTask)
       })
+      
     }catch( error ){
       showErrors(error)
     }
@@ -115,17 +145,21 @@ function App() {
   }
   
 
-  const updateCurrentProfilePoints = (id: number, points: number) => {
-    const p: Profile | undefined  = earners.find( (earner: Profile) => earner.id === id )
+  const updateCurrentProfilePoints = (id: number, points: number, add: boolean) => {
+    const p: Profile | undefined  = earners.find( (earner: Profile) => earner.id === Number( id ) )
 
     if(!p)return
     
-    p.points = points
+      if(add){
+        p.points += points
+      }else{
+        p.points -= points
+        p.points = p.points < 0 ? 0 :  p.points
+      }
+      
     
     updateProfile(p)
-
   }
-
 
 
   const handleFormSubmission = async (data: any, type: string, form: string = 'earners') => {
@@ -169,7 +203,7 @@ function App() {
         body: JSON.stringify(data)
       })
 
-      if(form !='tasks' ){
+      if(form !=='tasks' ){
        navigate(`/profiles/${data.id}/`)
       }else{
         getTasks(data.earner)
@@ -189,7 +223,6 @@ function App() {
   }
 
   const deleteReward = async (id: number) => {
-    console.log("deleteReward")
     try{
       await fetch(`${API_URL}/rewards/${id}`, {
         method: 'delete'
@@ -203,7 +236,6 @@ function App() {
 
 
   const deleteTask = async (id: number, profileId: number) => {
-    console.log("deleteTask")
     try{
       await fetch(`${API_URL}/tasks/${id}`, {
         method: 'delete'
@@ -213,6 +245,11 @@ function App() {
     }catch(error){
       showErrors(error)
     }
+  }
+
+  const claimReward = (rewardId: number, profileId: number, points: number) => {
+    updateReward(rewardId, profileId)
+    updateCurrentProfilePoints(profileId, points, false)
   }
 
   return (
@@ -228,15 +265,34 @@ function App() {
         />
         <Route
           path="/profiles/:id"
-          element={<SingleProfile profiles={earners} taskIcons={taskIcons} tasks={currentTasks} updateTasks={updateTasks} getTasks={getTasks} updatePoints={updateCurrentProfilePoints} handleFormSubmit={handleFormSubmission} deleteProfile={deleteProfile} deleteTask={deleteTask} />}
+          element={<SingleProfile 
+              profiles={earners} 
+              taskIcons={taskIcons} 
+              tasks={currentTasks}
+              rewardPoints={rewardPoints}
+              updateTasks={updateTasks} 
+              getTasks={getTasks}
+              updatePoints={updateCurrentProfilePoints}
+              handleFormSubmit={handleFormSubmission} 
+              deleteProfile={deleteProfile}
+              deleteTask={deleteTask} />}
         />
         <Route
           path="/rewards/"
           element={<Rewards rewardIcons={rewardIcons} rewards={rewards} handleFormSubmit={handleFormSubmission}  />}
         />
         <Route
+          path=":profile/rewards/:points"
+          element={<Rewards rewardIcons={rewardIcons} rewards={rewards} handleFormSubmit={handleFormSubmission}  />}
+        />
+        {/* <Route
           path="/rewards/:id"
           element={<SingleReward rewards={rewards} deleteReward={deleteReward}/>}
+        /> */}
+
+         <Route
+          path="/:profile/rewards/:id/:points"
+          element={<SingleReward rewards={rewards} deleteReward={deleteReward} claimReward={claimReward}/>}
         />
         <Route
           path="*"
