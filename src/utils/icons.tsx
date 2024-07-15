@@ -1,6 +1,6 @@
 import { library } from '@fortawesome/fontawesome-svg-core'
 
-import { faAward, faTrophy, faChildReaching, faIceCream, faHand, faPencil, faArrowLeft, faBroom, faHandSparkles ,faStar, faCircleCheck, faSchool, faBookOpen, faBook, faBath, faChessBoard, faAppleWhole, faTv, faGamepad, faPuzzlePiece, faHeart, faBowlingBall, faGolfBall, faBaseballBatBall, faTableTennisPaddleBall, faFootball, faBasketball, faSoccerBall, faMoneyBillWave, faPen, faFaceSmileBeam, faPaintBrush } from '@fortawesome/free-solid-svg-icons'
+import { faAward, faTrophy, faChildReaching, faIceCream, faHand, faPencil, faArrowLeft, faBroom, faHandSparkles ,faStar, faCircleCheck, faSchool, faBookOpen, faBook, faBath, faChessBoard, faAppleWhole, faTv, faGamepad, faPuzzlePiece, faHeart, faBowlingBall, faGolfBall, faBaseballBatBall, faTableTennisPaddleBall, faFootball, faBasketball, faSoccerBall, faMoneyBillWave, faPen, faFaceSmileBeam, faPaintBrush, faPizzaSlice } from '@fortawesome/free-solid-svg-icons'
 
 export function initIcons() {
     library.add(
@@ -38,6 +38,7 @@ export function initIcons() {
         faPencil,
         faFaceSmileBeam,
         faPaintBrush,
+        faPizzaSlice
     )
 }
 
