@@ -146,6 +146,7 @@ function App() {
   
 
   const updateCurrentProfilePoints = (id: number, points: number, add: boolean) => {
+  
     const p: Profile | undefined  = earners.find( (earner: Profile) => earner.id === Number( id ) )
 
     if(!p)return
@@ -190,6 +191,7 @@ function App() {
         }
 
         getEarners()
+
       }catch(error){
         showErrors(error)
       }
@@ -202,6 +204,8 @@ function App() {
         },
         body: JSON.stringify(data)
       })
+
+      getEarners()
 
       if(form !=='tasks' ){
        navigate(`/profiles/${data.id}/`)
@@ -216,7 +220,10 @@ function App() {
       await fetch(`${API_URL}/earners/${id}`, {
         method: 'delete'
       })
-       navigate('/profiles')
+
+      getEarners()
+      navigate('/profiles')
+
     }catch(error){
       showErrors(error)
     }
