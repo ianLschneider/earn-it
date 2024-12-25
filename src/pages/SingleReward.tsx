@@ -8,7 +8,6 @@ import Nav from '../components/Nav'
 
 interface Reward {
     id: number;
-    earners: number[];
     name: string;
     points: number;
     iconType: any;
@@ -48,7 +47,6 @@ const SingleReward = (props: Props ) => {
             return
         }
 
-        console.log(" currentReward.reward: ", r.name)
         setCurrentReward( r )
 
         setCurrentProfile(params.profile)

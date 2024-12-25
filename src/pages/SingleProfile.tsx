@@ -173,28 +173,27 @@ const SingleProfile = ({profiles, rewardPoints, taskIcons, tasks, updateTasks, g
                         
                         {!shouldShowAddTaskForm && !shouldShowEditTaskForm ?
                             <>
-                                {!tasks.length && 
-                                    <p className='font-semibold'>Add a task!</p>
-                                }
-                           
-                            {/* <h2 className='font-bold self-start mb-[10px]'>Tasks:</h2> */}
-                            <ul>
-                            {tasks.map(t => (
-                                <li key={t.id} className='flex gap-2 items-center mx-auto my-[10px]'>
-
-                                    <Task id={t.id} task={t.task} iconType={t.iconType} completed={t.completed} points={t.points} handleTaskCompleted={handleTaskCompleted} />
-                                    <button
-                                        className='text-primary'
-                                        type='button'
-                                        title='Edit Task'
-                                        onClick={ () => { showEditTaskForm( t.id ) } }
-                                    >
-                                        <FontAwesomeIcon icon='pencil' className='text-primary' />
-                                    </button>
-
-                                </li>
-                            ))}
-                            </ul>
+                            {!tasks.length ?
+                                <p className='font-semibold'>Add a task!</p>
+                                :
+                                <ul>
+                                {tasks.map(t => (
+                                    <li key={t.id} className='flex gap-2 items-center mx-auto my-[10px]'>
+    
+                                        <Task id={t.id} task={t.task} iconType={t.iconType} completed={t.completed} points={t.points} handleTaskCompleted={handleTaskCompleted} />
+                                        <button
+                                            className='text-primary'
+                                            type='button'
+                                            title='Edit Task'
+                                            onClick={ () => { showEditTaskForm( t.id ) } }
+                                        >
+                                            <FontAwesomeIcon icon='pencil' className='text-primary' />
+                                        </button>
+    
+                                    </li>
+                                ))}
+                                </ul>
+                            }
                             {rewardCaimed !== '' &&
                                 <p className='pt-[50px] font-bold'>A <span className='uppercase'>{rewardCaimed.replaceAll('-', ' ')}</span> has been claimed!</p>
                             }

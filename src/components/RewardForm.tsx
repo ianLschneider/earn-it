@@ -12,9 +12,8 @@ interface Props{
 const RewardForm = (props: Props) => {
 
     const [formData, setFormData] = useState({
-        name: '',
-        // earner: [1],
-        iconType: 'ice-cream',
+        name: '', 
+        iconType: 'star',
         points: 0,
     })
 
@@ -46,7 +45,7 @@ const RewardForm = (props: Props) => {
                     type='text'
                     onChange={handleChange}
                     value={formData.name}
-                    name='reward'
+                    name='name'
                 />
             </label>
             <label>
