@@ -151,7 +151,7 @@ const SingleProfile = ({profiles, rewardPoints, taskIcons, tasks, updateTasks, g
         <main className='w-full min-w-[300px] text-center h-full content-area bg-primary'>
             <div className='flex flex-col justify-center items-center h-full content-fill px-[10px]'>
                 {shouldShowClaimRewardsBtn &&
-                    <div className='bg-primary'><EILink url={`/${currentProfile.id}/rewards/${currentProfile.points}`} text='Claim Rewards' /></div>
+                    <div className='bg-primary'><EILink url={`/${currentProfile.id}/claim-rewards/${currentProfile.points}`} text='Claim Rewards' /></div>
                 }
                 <div className='relative flex flex-col justify-end items-center rounded-[25px] w-full max-w-[400px] min-h-[200px] bg-white px-[20px] py-[50px] mt-[20px] mb-[30px]'>
 
@@ -170,8 +170,14 @@ const SingleProfile = ({profiles, rewardPoints, taskIcons, tasks, updateTasks, g
                         <p className='mb-[20px]'>Age: {currentProfile.age}</p>
                         <p className='mb-[20px]'>Points: {currentProfile.points}</p>
 
+                        
                         {!shouldShowAddTaskForm && !shouldShowEditTaskForm ?
                             <>
+                                {!tasks.length && 
+                                    <p className='font-semibold'>Add a task!</p>
+                                }
+                           
+                            {/* <h2 className='font-bold self-start mb-[10px]'>Tasks:</h2> */}
                             <ul>
                             {tasks.map(t => (
                                 <li key={t.id} className='flex gap-2 items-center mx-auto my-[10px]'>
@@ -193,7 +199,7 @@ const SingleProfile = ({profiles, rewardPoints, taskIcons, tasks, updateTasks, g
                                 <p className='pt-[50px] font-bold'>A <span className='uppercase'>{rewardCaimed.replaceAll('-', ' ')}</span> has been claimed!</p>
                             }
                             <br className='my-[20px]' />
-                            <EIAddButton title={'Add Task'} click={showAddTaskForm} />
+                            <EIAddButton title={'Add Task'} spacing='0px' clickHandler={showAddTaskForm} />
                             </>
                         :   
                             <>

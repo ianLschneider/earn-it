@@ -43,14 +43,11 @@ const Profiles = (props: Props ) => {
               <ul>
                 {props.profiles.map(p => <ProfileLink id={p.id} name={p.name} key={p.id} /> )}
               </ul>
-              <EIAddButton title={'Add Profile'} click={showAddProfileForm} />
+              <EIAddButton title={'Add Profile'} clickHandler={showAddProfileForm} />
               </>
             :
               <ProfileForm formType='new' buttonLabel='Add Profile' hideForm={hideProfileForm} handleSubmit={props.handleFormSubmit}/>
             }
-            <Link to={`/profiles`}>
-              Profiles
-          </Link>
           </div>
       </div>
     </main>

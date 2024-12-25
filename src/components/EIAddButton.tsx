@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const EIAddButton = ( { title, click } : { title: string, click: ()=> void }) => {
+const EIAddButton = ( { title, spacing = '30px', clickHandler } : { title: string, spacing?: string, clickHandler: ()=> void }) => {
     const [ active, setActive ] = useState<boolean>(false)
 
     const mouseUpHandler = (event: any) => {
@@ -16,9 +16,9 @@ const EIAddButton = ( { title, click } : { title: string, click: ()=> void }) =>
   return (
     <button 
         type='button' 
-        className={`w-[50px] h-[50px] mt-[30px] rounded-full  bg-secondary text-4xl text-white hover:opacity-80 ${active ? 'bg-accent' : null}`}
+        className={`w-[50px] h-[50px] mt-[${spacing}] rounded-full  bg-secondary text-4xl text-white hover:opacity-80 ${active ? 'bg-accent' : null}`}
         title={title}
-        onClick={click}
+        onClick={clickHandler}
         onMouseDown={mouseDownHandler}
         onMouseUp={mouseUpHandler}
     >

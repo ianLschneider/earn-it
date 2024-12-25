@@ -36,7 +36,7 @@ function App() {
   
   const [apiErrors, setApiErrors] = useState<any>('')
 
-  const API_URL = 'https://earn-it-f84b3a1e2606.herokuapp.com' //'http://localhost:8000'
+  const API_URL = 'http://localhost:8000'//'https://earn-it-f84b3a1e2606.herokuapp.com'
 
   const navigate = useNavigate()
 
@@ -104,25 +104,6 @@ function App() {
     }
   }
 
-  const updateReward = async (rewardId: number, profileId: number) => {
-
-    const reward = rewards.find( (r: any) => r.id === rewardId)
-    if(reward)reward.earner.push(Number( profileId ))
-
-    try{
-      await fetch (`${API_URL}/rewards/${rewardId}/`, {
-        method: 'put',
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(reward)
-      })
-    }catch( error ){
-      showErrors(error)
-    }
-
-    navigate(`/profiles/${profileId}?reward=${reward.reward.replaceAll(' ', '-')}`)
-  }
   const updateTasks = async (id: number, completed: boolean) => {
    
     const currentTask: any = currentTasks.find( (task: any) => task.id === id)
@@ -254,9 +235,9 @@ function App() {
     }
   }
 
-  const claimReward = (rewardId: number, profileId: number, points: number) => {
-    updateReward(rewardId, profileId)
+  const claimReward = (rewardId: number, rewardName: string, profileId: number, points: number) => {
     updateCurrentProfilePoints(profileId, points, false)
+    navigate(`/profiles/${profileId}?reward=${rewardName.replaceAll(' ', '-')}`)
   }
 
   return (
@@ -289,17 +270,16 @@ function App() {
           element={<Rewards rewardIcons={rewardIcons} rewards={rewards} handleFormSubmit={handleFormSubmission}  />}
         />
         <Route
-          path=":profile/rewards/:points"
-          element={<Rewards rewardIcons={rewardIcons} rewards={rewards} handleFormSubmit={handleFormSubmission}  />}
+          path="/:profile/rewards/:id/"
+          element={<SingleReward rewards={rewards} deleteReward={deleteReward} claimReward={claimReward}/>}
         />
-        {/* <Route
-          path="/rewards/:id"
-          element={<SingleReward rewards={rewards} deleteReward={deleteReward}/>}
-        /> */}
-
-         <Route
+        <Route
           path="/:profile/rewards/:id/:points"
           element={<SingleReward rewards={rewards} deleteReward={deleteReward} claimReward={claimReward}/>}
+        />
+        <Route
+          path=":profile/claim-rewards/:points/"
+          element={<Rewards rewardIcons={rewardIcons} rewards={rewards} handleFormSubmit={handleFormSubmission}  />}
         />
         <Route
           path="*"

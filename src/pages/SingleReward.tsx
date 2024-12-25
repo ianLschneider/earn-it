@@ -9,14 +9,14 @@ import Nav from '../components/Nav'
 interface Reward {
     id: number;
     earners: number[];
-    reward: string;
+    name: string;
     points: number;
     iconType: any;
 }
 
 interface Props {
     rewards: Reward[];
-    claimReward:(rewardId: number, profileId: number, points: number) => void;
+    claimReward:(rewardId: number, rewardName: string, profileId: number, points: number) => void;
     deleteReward: (id: number) => void;
 }
 
@@ -24,7 +24,7 @@ const SingleReward = (props: Props ) => {
 
     const params = useParams() as any
 
-    const blank =  useMemo<any>( ()=>( {id:0, reward: '', points: 0} ), [] )
+    const blank =  useMemo<any>( ()=>( {id:0, name: '', points: 0} ), [] )
 
     const [currentReward, setCurrentReward] = useState<Reward>( blank )
 
@@ -37,7 +37,8 @@ const SingleReward = (props: Props ) => {
     }
     
     const claimReward = ()=>{
-        props.claimReward(currentReward.id, params.profile, currentReward.points )
+      
+        props.claimReward(currentReward.id, currentReward.name, params.profile, currentReward.points )
     }
     useEffect(()=>{
 
@@ -47,6 +48,7 @@ const SingleReward = (props: Props ) => {
             return
         }
 
+        console.log(" currentReward.reward: ", r.name)
         setCurrentReward( r )
 
         setCurrentProfile(params.profile)
@@ -60,7 +62,7 @@ const SingleReward = (props: Props ) => {
         <main className='w-full min-w-[300px] text-center h-full content-area bg-primary'>
             <div className='flex flex-col justify-center items-center h-full content-fill px-[10px]'>
                 <div className='flex flex-col justify-end items-center rounded-[25px] w-full max-w-[400px] min-h-[200px] bg-white px-[20px] py-[50px] mt-[20px] mb-[30px]'>
-                    <Link to={`/rewards`} className='self-start text-secondary'>
+                    <Link to={`/${params.profile}/claim-rewards/${params.points}`} className='self-start text-secondary'>
                         <FontAwesomeIcon icon='arrow-left' className='text-secondary' /> Back
                     </Link>
 
@@ -68,7 +70,7 @@ const SingleReward = (props: Props ) => {
                     {currentReward.iconType ?
                         <FontAwesomeIcon icon={currentReward.iconType} className='text-6xl' />
                         : ''
-                        }{currentReward.reward}
+                        }{currentReward.name}
                     </h1>
                     <p className='mb-[40px]'>Points: {currentReward.points}</p>                   
                     {currentProfile > 0 && currentPoints >= currentReward.points && 
@@ -78,11 +80,13 @@ const SingleReward = (props: Props ) => {
                         onClick={claimReward}
                         >Claim Reward</button>
                     }
-                    <button
-                    type='button'
-                    className='ei-link mt-[20px] bg-secondary text-white hover:opacity-80 flex justify-center px-[40px]'
-                    onClick={deleteReward}
-                    >Delete</button>
+                    {currentProfile < 1 && 
+                        <button
+                        type='button'
+                        className='ei-link mt-[20px] bg-secondary text-white hover:opacity-80 flex justify-center px-[40px]'
+                        onClick={deleteReward}
+                        >Delete</button>
+                    }
                     
                 </div>
 

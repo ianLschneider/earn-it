@@ -124,7 +124,11 @@ const Nav = () => {
                             >
                             Profiles
                             </Link>
-                            <Link to='/0/rewards/0/'
+                            {/* <Link to='/0/rewards/0/'
+                             className='bg-primary text-white hover:bg-secondary px-6 py-2.5 transition duration-200 uppercase font-semibold rounded-full cursor-pointer '>
+                                Rewards
+                            </Link> */}
+                            <Link to='/rewards/'
                              className='bg-primary text-white hover:bg-secondary px-6 py-2.5 transition duration-200 uppercase font-semibold rounded-full cursor-pointer '>
                                 Rewards
                             </Link>
@@ -191,7 +195,10 @@ const Nav = () => {
                             </Link>
                             </motion.div>
                             <motion.div variants={navItemMotion}>
-                            <Link to='/0/rewards/0' onClick={() => setToggled(false)} className='bg-primary rounded-full cursor-pointer text-white hover:text-secondary px-8 py-2.5 sm:px-10 transition duration-200 text-2xl sm:text-4xl uppercase font-semibold'>
+                            {/* <Link to='/0/rewards/0' onClick={() => setToggled(false)} className='bg-primary rounded-full cursor-pointer text-white hover:text-secondary px-8 py-2.5 sm:px-10 transition duration-200 text-2xl sm:text-4xl uppercase font-semibold'>
+                                Rewards
+                            </Link> */}
+                            <Link to='/rewards/' onClick={() => setToggled(false)} className='bg-primary rounded-full cursor-pointer text-white hover:text-secondary px-8 py-2.5 sm:px-10 transition duration-200 text-2xl sm:text-4xl uppercase font-semibold'>
                                 Rewards
                             </Link>
                             </motion.div>

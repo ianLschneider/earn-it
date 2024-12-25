@@ -1,6 +1,6 @@
 {
-  "name": "earn-it_front",
-  "version": "0.1.0",
+  "name": "earn-it_front-end",
+  "version": "1.2.0",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.2",

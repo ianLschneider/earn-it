@@ -9,7 +9,7 @@ import RewardForm from '../components/RewardForm'
 interface Reward {
   earner: any
   id: number;
-  reward: string;
+  name: string;
   points: number
   iconType: any;
 }
@@ -44,9 +44,9 @@ const Rewards = (props: Props) => {
           {!showForm ?
               <>
               <ul>
-                { props.rewards.map(r => <RewardLink profile={params.profile} points={params.points} id={r.id} reward={r.reward} iconType={r.iconType} spacing={'between'} key={r.id} /> ) }
+                { props.rewards.map(r => <RewardLink profile={params.profile} points={params.points} id={r.id} reward={r.name} iconType={r.iconType} spacing={'between'} key={r.id} /> ) }
               </ul>
-              <EIAddButton title={'Add Profile'} click={showAddRewardForm} />
+              <EIAddButton title={'Add Reward'} clickHandler={showAddRewardForm} />
               </>
             :   
 
