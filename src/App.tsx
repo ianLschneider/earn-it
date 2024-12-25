@@ -36,7 +36,7 @@ function App() {
   
   const [apiErrors, setApiErrors] = useState<any>('')
 
-  const API_URL = 'http://localhost:8000'//'https://earn-it-f84b3a1e2606.herokuapp.com'
+  const API_URL = 'https://earn-it-f84b3a1e2606.herokuapp.com' //'http://localhost:8000'
 
   const navigate = useNavigate()
 
