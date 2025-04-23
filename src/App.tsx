@@ -75,7 +75,7 @@ function App() {
       if(points.length < 1){
         setRewardPoints(-1)
       }else{
-        points = Math.min(...points);
+        points = Math.max(...points);
         setRewardPoints(points)
       }
       
